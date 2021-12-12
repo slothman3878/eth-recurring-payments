@@ -6,6 +6,8 @@ For convenience, only considering pre-paid subscriptions
 2. Trustless indefinite recurring payments on set schedules (i.e. x period of time versus the more practical "12th of December, January, February, etc.)
 3. Recipient Notification of recurring payments - i.e. trustless insurance of payment scheduling (credit system)
 
+<hr>
+
 1 is a bit tricky. Every ethereum transaction requires a private key signature. This means that any automated payment system on Ethereum requires trusting a third-party with one's private key &ndash; not "trustless" at all. I've been trying to figure out a solution that allows EOA, but can't think of one as of yet. Potential layer 2 solution may be able to solve this &ndash; a parachain that supports unbounded transaction lists.
 
 2 is easy enough to implement programmatically&ndash;either by specifying a block number and/or timestamp range.
