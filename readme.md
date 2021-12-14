@@ -21,14 +21,19 @@ For convenience, only considering pre-paid subscriptions
 * Ideally, the payment recipient should only be concerned with successful transactions and pending transactions.
 * Any Ethereum Transaction requires a digital signature of the transferring ether and/or smart contract function call.
   * This system, while inconvenient for recurring payments, is a necessary part of Ethereum's security.
+* Are event-logs sufficient for proof of correct payments?
 
 ## Method 1 (ERC/Smart Contracts Only)
 
 Subscriptions Wallets &ndash; a.k.a smart contract wallets that allow subscription. For security, recipient accounts are also implemented using smart contracts. Assets move from subscription wallets contracts to recipient wallet contracts. Automation can be supported by using
 
+### Upsides
+- Beneficiary side gas-payments. Excluding the initial subscription, the beneficiary has to trigger all transactions.
+- The Subscriber contract doesn't have to keep Ether
+
 ### Downsides
 - Does not support EOA
-- Moving assets into these subscription wallets is perhaps an unnecessary extra step. Regular transfer of tokens (unrelated to subscriptions) can be supported, but will result in slightly higher gas fees.
+- "trustful" automation &ndash; automation must be implemented by the beneficiary.
 
 ### Programmatic Implementation
 
@@ -37,3 +42,19 @@ Subscriptions Wallets &ndash; a.k.a smart contract wallets that allow subscripti
 
 ### References
 - [makerdao: what are smart contract wallets](https://blog.makerdao.com/what-are-smart-contract-wallets-and-how-can-they-benefit-defi-users/)
+
+## Method 2 (AlarmClock Oracles)
+Refer to https://github.com/ETH-Pantheon/Aion
+`subscribe` -> `schedule(payment)` -> `payment` -> `schedule(payment)` -> ...
+
+Difficult test.
+
+### Upsides
+- Trustless indefinite automation &ndash; one transaction triggers the entire transaction cycle.
+  - Assuming the Alarm Clock Oracle being used is trustless, the automation is also trustless.
+
+### Downsides
+- Does not Support EOA.
+- High gas fee &ndash; refer to AION application details
+- Oracle dependency.
+- The Subscriber contract must contain a healthy amount of ether.
