@@ -12,3 +12,6 @@ typechain
 #Hardhat files
 cache
 artifacts
+ignore
+method1.md
+method2.md
