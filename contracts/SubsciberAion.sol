@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "./interface/ISubscriber.sol";
@@ -9,7 +10,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 // interface Aion
-contract Aion {
+abstract contract Aion {
   uint256 public serviceFee;
   function ScheduleCall(uint256 blocknumber, address to, uint256 value, uint256 gaslimit, uint256 gasprice, bytes memory data, bool schedType) public payable virtual returns (uint,address);
 }
@@ -27,11 +28,9 @@ contract SubscriberAion is Ownable, ERC165, ISubscriber{
   address constant private _aion_main = 0xCBe7AB529A147149b1CF982C3a169f728bC0C3CA;
   address constant private _aion_ropsten = 0xFcFB45679539667f7ed55FA59A15c8Cad73d9a4E;
   Aion private _aion;
-  uint256 private _gas;
 
   constructor() {
     _aion = Aion(_aion_ropsten);
-    _gas = 20000;
   }
 
   // for safety
@@ -68,7 +67,7 @@ contract SubscriberAion is Ownable, ERC165, ISubscriber{
   function transfer(
     uint256 _amount,
     address _to
-  ) public onlyOwner payable override {
+  ) public onlyOwner override {
     (bool success,) = _to.call{value: _amount, gas: 5000}("");
     require(success,"Subscriber: Failed ETH transfer");
   }
@@ -86,21 +85,38 @@ contract SubscriberAion is Ownable, ERC165, ISubscriber{
     uint256 _amount,
     uint256 _period,
     uint256 _next_payment,
-    address _token
-  ) public {
-    require(true);
+    address _token,
+    bytes memory //_data
+  ) public override {
+    /// will add assembly script to parse _data into gas_limit and fee
+    uint256 gas_limit = 2e4;
+    uint256 gas_fee = 1e9;
 
+    _subscriptions[_beneficiary] = Sub({
+      token: _token,
+      fee: _amount,
+      period: _period,
+      next_payment: _next_payment
+    });
+    _is_subscribed[_beneficiary] = true;
+    emit Subscription(_beneficiary, _token, _amount, _period, _next_payment);
 
+    schedulePayment(_beneficiary, gas_limit, gas_fee);
   }
 
-  /// set gas fee for scheduled payments
-  function setGas(uint256 gas_) public isOwner virtual {
-    _gas = gas_;
+  function unsubscribe(
+    address _beneficiary
+  ) external override {
+    _is_subscribed[_beneficiary] = false;
   }
 
-  /// return current gas fee
-  function gas() public view virtual returns(uint256){
-    return _gas;
+  // unnecessary for this implementation
+  function collect(
+    address,
+    uint256,
+    address
+  ) public pure override {
+    revert();
   }
 
   function payment(
@@ -112,21 +128,34 @@ contract SubscriberAion is Ownable, ERC165, ISubscriber{
     require(_amount==_subscriptions[_beneficiary].fee, "Subscriber: Attempted Collection is not the agreed fee");
     require(block.timestamp >= _subscriptions[_beneficiary].next_payment, "Subscriber: Attempted collection earlier than scheduled");
 
+    uint256 last_payment = _subscriptions[_beneficiary].next_payment;
+    _subscriptions[_beneficiary].next_payment += _subscriptions[_beneficiary].period;
+
     if(_token == address(0)) {
       (bool success,) = _beneficiary.call{value: _amount}("");
       require(success,"Subscriber: Failed ETH transfer");
     } else {
       TransferHelper.safeTransfer(_token, _beneficiary, _amount);
     }
+    emit Payment(_beneficiary, _token, _amount, last_payment);
     // recursively schedule payment
-    schedulePayment(_beneficiary);
+    schedulePayment(_beneficiary, 20000, 1e9);
   }
 
   function schedulePayment(
-    address _beneficiary
+    address _beneficiary,
+    uint256 _gas_limit,
+    uint256 _gas_price
   ) public {
     bytes memory data = abi.encodeWithSelector(bytes4(keccak256("payment()")));
-    uint callCost = _aion.serviceFee();
-    _aion.ScheduleCall(_subscriptions[_beneficiary].next_payment, address(this), 0, _amount, 1e9, data, true);
+    uint callCost = _aion.serviceFee() + _gas_price*_gas_limit;
+    _aion.ScheduleCall(
+      _subscriptions[_beneficiary].next_payment, 
+      address(this), 
+      0, 
+      callCost, 
+      _gas_price, 
+      data, 
+      true);
   }
 }

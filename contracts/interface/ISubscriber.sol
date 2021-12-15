@@ -47,7 +47,7 @@ interface ISubscriber {
   function transfer(
     uint256 _amount,
     address _to
-  ) external payable;
+  ) external;
 
   /// @notice ERC20 transfer
   /// @param _amount Amount of Tokens
@@ -66,13 +66,15 @@ interface ISubscriber {
   /// @param _period      Payment Schedule in seconds
   /// @param _next_payment Timestamp of next payment
   /// @param _token       token address. If _token == address(0), the subscription is in ETH
+  /// @param _data        misc input
   /// NOTE: should have is_owner modifier
   function subscribe(
     address _beneficiary,
     uint256 _amount,
     uint256 _period,
     uint256 _next_payment,
-    address _token
+    address _token,
+    bytes memory _data
   ) external;
 
   function unsubscribe(

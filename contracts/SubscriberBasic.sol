@@ -53,7 +53,7 @@ contract SubscriberBasic is Ownable, ERC165, ISubscriber {
   function transfer(
     uint256 _amount,
     address _to
-  ) public onlyOwner payable override {
+  ) public onlyOwner override {
     (bool success,) = _to.call{value: _amount, gas: 5000}("");
     require(success,"Subscriber: Failed ETH transfer");
   }
@@ -71,7 +71,8 @@ contract SubscriberBasic is Ownable, ERC165, ISubscriber {
     uint256 _amount,
     uint256 _period,
     uint256 _next_payment,
-    address _token
+    address _token,
+    bytes memory
   ) public onlyOwner override virtual {
     _subscriptions[_beneficiary] = Sub({
       token: _token,
@@ -96,7 +97,7 @@ contract SubscriberBasic is Ownable, ERC165, ISubscriber {
     address _beneficiary,
     uint256 _amount,
     address _token
-  ) public virtual {
+  ) public override virtual {
     require(msg.sender==_beneficiary, "Subscriber: Collection not by Beneficiary");
     require(_is_subscribed[_beneficiary], "Subscriber: Not subscribed to beneficiary");
     require(_amount==_subscriptions[_beneficiary].fee, "Subscriber: Attempted Collection is not the agreed fee");
