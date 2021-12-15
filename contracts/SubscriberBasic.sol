@@ -96,11 +96,12 @@ contract SubscriberBasic is Ownable, ERC165, ISubscriber {
     address _beneficiary,
     uint256 _amount,
     address _token
-  ) public override virtual {
+  ) public virtual {
     require(msg.sender==_beneficiary, "Subscriber: Collection not by Beneficiary");
     require(_is_subscribed[_beneficiary], "Subscriber: Not subscribed to beneficiary");
     require(_amount==_subscriptions[_beneficiary].fee, "Subscriber: Attempted Collection is not the agreed fee");
-    
+    require(block.timestamp >= _subscriptions[_beneficiary].next_payment, "Subscriber: Attempted collection earlier than scheduled");
+
     uint256 last_payment = _subscriptions[_beneficiary].next_payment;
     _subscriptions[_beneficiary].next_payment = block.timestamp + _subscriptions[_beneficiary].period;
     

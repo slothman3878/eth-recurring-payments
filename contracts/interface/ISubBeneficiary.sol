@@ -23,10 +23,12 @@ interface ISubBeneficiary {
     uint256 _timestamp
   ) external returns(bytes4);
 
+  /*
   /// @notice collect payment in Ether from subscriber
   function collectFrom(
     address _subscriber,
     uint256 _amount,
     address _token
   ) external payable;
+  */
 }
