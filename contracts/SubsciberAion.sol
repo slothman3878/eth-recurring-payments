@@ -12,7 +12,28 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 // interface Aion
 abstract contract Aion {
   uint256 public serviceFee;
-  function ScheduleCall(uint256 blocknumber, address to, uint256 value, uint256 gaslimit, uint256 gasprice, bytes memory data, bool schedType) public payable virtual returns (uint,address);
+  function ScheduleCall(
+    uint256 blocknumber, 
+    address to, 
+    uint256 value, 
+    uint256 gaslimit, 
+    uint256 gasprice, 
+    bytes memory data, 
+    bool schedType
+  ) public payable virtual returns (uint,address);
+  
+  function cancellScheduledTx(
+    uint256 blocknumber, 
+    address from, 
+    address to, 
+    uint256 value, 
+    uint256 gaslimit, 
+    uint256 gasprice,
+    uint256 fee, 
+    bytes calldata data, 
+    uint256 aionId, 
+    bool schedType
+  ) external virtual returns(bool);
 }
 
 contract SubscriberAion is Ownable, ERC165, ISubscriber{
@@ -122,7 +143,9 @@ contract SubscriberAion is Ownable, ERC165, ISubscriber{
   function payment(
     address _beneficiary,
     uint256 _amount,
-    address _token
+    address _token,
+    uint256 _gas_limit,
+    uint256 _gas_price
   ) external virtual {
     require(_is_subscribed[_beneficiary], "Subscriber: Not subscribed to beneficiary");
     require(_amount==_subscriptions[_beneficiary].fee, "Subscriber: Attempted Collection is not the agreed fee");
@@ -138,8 +161,8 @@ contract SubscriberAion is Ownable, ERC165, ISubscriber{
       TransferHelper.safeTransfer(_token, _beneficiary, _amount);
     }
     emit Payment(_beneficiary, _token, _amount, last_payment);
-    // recursively schedule payment
-    schedulePayment(_beneficiary, 20000, 1e9);
+    // schedule next payment
+    schedulePayment(_beneficiary, _gas_limit, _gas_price);
   }
 
   function schedulePayment(
