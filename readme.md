@@ -19,7 +19,7 @@ It's worth thinking in terms of **collections** rather than **payments**. Let's 
 
 The key word here is **promise**. 
 
+> A transaction can only be scheduled if the preceding transaction is completed.
+
 ## Solution
-
-
-A transaction can only be scheduled if the preceding transaction is completed.
+A smart contract wallet that allows subscriptions.
