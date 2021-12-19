@@ -17,9 +17,19 @@ It's worth thinking in terms of **collections** rather than **payments**. Let's 
 
 > A **promise** by a subscriber to pay X to a beneficiary at regular intervals.
 
-The key word here is **promise**. 
+<hr>
 
 > A transaction can only be scheduled if the preceding transaction is completed.
 
 ## Solution
 A smart contract wallet that allows subscriptions.
+
+## Specification
+### Contracts
+The aim is to maximize interoperability.
+
+#### `ISubscriber` interface
+
+
+### Demo Beneficiary
+A simple node application that triggers the `collect` function on a subscriber contract on regular intervals.

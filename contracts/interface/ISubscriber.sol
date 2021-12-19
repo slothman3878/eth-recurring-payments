@@ -61,12 +61,12 @@ interface ISubscriber {
   ) external;
 
   /// @notice 
-  /// @param _beneficiary  Subscribee contract address
-  /// @param _amount      Subscription Fee
-  /// @param _period      Payment Schedule in seconds
-  /// @param _next_payment Timestamp of next payment
-  /// @param _token       token address. If _token == address(0), the subscription is in ETH
-  /// @param _data        misc input
+  /// @param _beneficiary   Subscribee contract address
+  /// @param _amount        Subscription Fee
+  /// @param _period        Payment Schedule in seconds
+  /// @param _next_payment  Timestamp of next payment
+  /// @param _token         token address. If _token == address(0), the subscription is in ETH
+  /// @param _data          misc input
   /// NOTE: should have is_owner modifier
   function subscribe(
     address _beneficiary,

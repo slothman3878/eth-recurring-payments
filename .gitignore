@@ -8,12 +8,13 @@ node_modules
 coverage
 coverage.json
 typechain
-
-#Hardhat files
-cache
-artifacts
 ignore
 method1.md
 method2.md
 old.readme.md
-test
+dist
+
+#Hardhat files
+cache
+artifacts
+deployments
