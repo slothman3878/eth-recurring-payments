@@ -26,7 +26,8 @@ interface ISubscriber {
     address indexed beneficiary,
     address token,
     uint256 fee,
-    uint256 indexed timestamp
+    uint256 indexed timestamp,
+    uint256 next_payment
   );
 
   /// @notice last collection date by collector

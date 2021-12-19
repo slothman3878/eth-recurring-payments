@@ -20,6 +20,14 @@ require('./tasks/fund-simp');
  */
 module.exports = {
   solidity: "0.8.4",
+  networks: {
+    hardhat: { // id: 31337
+      forking: {
+        url: 'https://eth-mainnet.alchemyapi.io/v2/'+process.env.ALCHEMY_KEY,
+        blocknumber: 13833351
+      }
+    }
+  },
   namedAccounts: {
     deployer: {
       default: 0,

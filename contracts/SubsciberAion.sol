@@ -160,7 +160,7 @@ contract SubscriberAion is Ownable, ERC165, ISubscriber{
     } else {
       TransferHelper.safeTransfer(_token, _beneficiary, _amount);
     }
-    emit Payment(_beneficiary, _token, _amount, last_payment);
+    emit Payment(_beneficiary, _token, _amount, last_payment, _subscriptions[_beneficiary].next_payment);
     // schedule next payment
     schedulePayment(_beneficiary, _gas_limit, _gas_price);
   }

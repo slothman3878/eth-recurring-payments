@@ -1,8 +1,27 @@
+const openAddress = async (path) => {
+  try { 
+    return require(path).address;
+  } catch {
+    console.log('hello');
+    return "";
+  }
+}
+
 task("fund-simp", "Gives 10k Simp Tokens to Account")
   .addOptionalParam("simpaddress", "The address of simple token contract",
-    require("../deployments/localhost/SimpleToken.json").address)
+    //require("../deployments/localhost/SimpleToken.json").address)
+    ((path)=>{
+      try { return require(path).address; } catch {
+        return "";
+      }
+    })("../deployments/localhost/SimpleToken.json"))
   .addOptionalParam("account", "The account's address",
-    require("../deployments/localhost/SubscriberBasic.json").address)
+    //require("../deployments/localhost/SubscriberBasic.json").address)
+    ((path)=>{
+      try { return require(path).address; } catch {
+        return "";
+      }
+    })("../deployments/localhost/SubscriberBasic.json"))
   .addOptionalParam("amount", "Amount of SIMP to be transferred", "10000")
   .setAction(async(args) => {
     const amount = ethers.BigNumber.from(args.amount);
