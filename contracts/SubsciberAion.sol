@@ -69,6 +69,18 @@ contract SubscriberAion is Ownable, ERC165, ISubscriber{
       interfaceId == type(ISubscriber).interfaceId ||
       super.supportsInterface(interfaceId);
   }
+  function isSubscribedTo(
+    address _beneficiary
+  ) public view override returns(bool) {
+    /// there are definitely better possible implementations for this
+    return _is_subscribed[_beneficiary];
+  }
+  function fee(
+    address _beneficiary
+  ) public view override returns (uint256) {
+    require(_is_subscribed[_beneficiary], "Subscriber: not subscribed to beneficiary");
+    return _subscriptions[_beneficiary].fee;
+  }
 
   function nextPayment(
     address _beneficiary
@@ -78,11 +90,12 @@ contract SubscriberAion is Ownable, ERC165, ISubscriber{
     return _subscriptions[_beneficiary].next_payment;
   }
 
-  function isSubscribedTo(
+
+  function paymentCurrency(
     address _beneficiary
-  ) public view override returns(bool) {
-    /// there are definitely better possible implementations for this
-    return _is_subscribed[_beneficiary];
+  ) public view override returns(address) {
+    require(_is_subscribed[_beneficiary], "Subscriber: not subscribed to beneficiary");
+    return _subscriptions[_beneficiary].token;
   }
 
   function transfer(

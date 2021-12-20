@@ -49,6 +49,20 @@ contract SubscriberBasic is Ownable, ERC165, ISubscriber {
     return _is_subscribed[_beneficiary];
   }
 
+  function fee(
+    address _beneficiary
+  ) public view override returns (uint256) {
+    require(_is_subscribed[_beneficiary], "Subscriber: not subscribed to beneficiary");
+    return _subscriptions[_beneficiary].fee;
+  }
+
+  function paymentCurrency(
+    address _beneficiary
+  ) public view override returns(address) {
+    require(_is_subscribed[_beneficiary], "Subscriber: not subscribed to beneficiary");
+    return _subscriptions[_beneficiary].token;
+  }
+
   function transfer(
     uint256 _amount,
     address _to
@@ -162,7 +176,7 @@ contract SubscriberBasic is Ownable, ERC165, ISubscriber {
       try ISubBeneficiary(_beneficiary).onCollection(
         msg.sender, _subscriber, _token, _amount, _timestamp
       ) returns (bytes4 retval) {
-        return retval == bytes4(keccak256(bytes("onCollection(address,address,address,uint256,uint256)")));
+        return retval == ISubBeneficiary.onCollection.selector;
       } catch (bytes memory reason) {
         if(reason.length==0) {
           revert("Subscriber: collection attempted by non-SubBeneficiary implementer");

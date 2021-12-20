@@ -13,7 +13,7 @@ interface ISubscriber {
     address token,
     uint256 fee,
     uint256 period,
-    uint256 next_payment
+    uint256 indexed next_payment
   );
 
   /// @dev Emits when a beneficiary collects from subscriber
@@ -27,8 +27,12 @@ interface ISubscriber {
     address token,
     uint256 fee,
     uint256 indexed timestamp,
-    uint256 next_payment
+    uint256 indexed next_payment
   );
+
+  function isSubscribedTo(
+    address _beneficiary
+  ) external view returns(bool);
 
   /// @notice last collection date by collector
   /// @param _collector Collector's address
@@ -37,9 +41,13 @@ interface ISubscriber {
     address _collector
   ) external view returns(uint256);
 
-  function isSubscribedTo(
+  function fee(
     address _beneficiary
-  ) external view returns(bool);
+  ) external view returns(uint256);
+
+  function paymentCurrency(
+    address _beneficiary
+  ) external view returns(address);
 
   /// @notice ether transfer. Adds basic wallet functionality to smart contract.
   /// @param _amount Amount of Ether

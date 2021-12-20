@@ -1,5 +1,4 @@
 const { expect } = require('chai');
-const sinon = require('sinon');
 const { waffle } = require('hardhat');
 const provider = waffle.provider;
 
@@ -10,9 +9,7 @@ const bigNum2Int=(bn)=>{
 }
 
 /// should just generate a random wallet then transfer funds to this wallet instead of using one of the waffle signers
-describe("Subscription", async () => {
-  var clock;
-
+describe("External Subscription", async () => {
   let deployer, subscriber, external_beneficiary, contract_beneficiary;
 
   var simp_address;
@@ -104,6 +101,7 @@ describe("Subscription", async () => {
       new Date().getTime()/1000, delta
     );
     
+    /// initial collection
     var prev_balance = await SimpToken.balanceOf(external_beneficiary.address);
 
     SubscriberBasic = await SubscriberBasic.connect(external_beneficiary);
@@ -112,6 +110,8 @@ describe("Subscription", async () => {
       1,
       simp_address
     )).wait();
+
+    expect(bigNum2Int(prev_balance)+1).to.equal(await SimpToken.balanceOf(external_beneficiary.address));
 
     /// collect after 15 seconds
     await new Promise((resolve)=>{setTimeout(resolve, 15000);});

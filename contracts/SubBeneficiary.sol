@@ -25,6 +25,9 @@ contract SubBeneficiary is ISubBeneficiary {
     _token = token_;
   }
 
+  // for safety
+  receive() external payable {}
+  
   function onSubscription(
     address _operator,
     address _subscriber,
@@ -34,7 +37,8 @@ contract SubBeneficiary is ISubBeneficiary {
     uint256 _next_payment
   ) external override returns(bytes4) {
     _sub_tokens[_subscriber] = 1;
-    return bytes4(keccak256(bytes("onSubcription(address,address,address,uint256,uint256,uint256)")));
+    return ISubBeneficiary.onSubscription.selector;
+    //return bytes4(keccak256(bytes("onSubcription(address,address,address,uint256,uint256,uint256)")));
   }
 
   /// @notice called on payment collection
@@ -45,7 +49,8 @@ contract SubBeneficiary is ISubBeneficiary {
     uint256 _amount,
     uint256 _timestamp
   ) external override returns(bytes4) {
-    return bytes4(keccak256(bytes("onCollection(address,address,address,uint256,uint256")));
+    return ISubBeneficiary.onCollection.selector;
+    //return bytes4(keccak256(bytes("onCollection(address,address,address,uint256,uint256")));
   }
 
   /// @notice collect payment from subscriber
