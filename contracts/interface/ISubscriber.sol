@@ -30,21 +30,29 @@ interface ISubscriber {
     uint256 indexed next_payment
   );
 
+  /// @notice is the subscriber subscribed to the given beneficiary
+  /// @param _beneficiary Beneficiary's address
+  /// @return subscription status of given beneficiary
   function isSubscribedTo(
     address _beneficiary
   ) external view returns(bool);
 
-  /// @notice last collection date by collector
-  /// @param _collector Collector's address
+  /// @notice last collection date by beneficiary
+  /// @param _beneficiary Beneficiary's address
   /// @return last collection date
   function nextPayment(
-    address _collector
+    address _beneficiary
   ) external view returns(uint256);
 
+  /// @notice subscription fee
+  /// @param _beneficiary Beneficiary's address
   function fee(
     address _beneficiary
   ) external view returns(uint256);
 
+  /// @notice subscription currency
+  /// @dev should return 0x0 for ether
+  /// @param _beneficiary Beneficiary's address
   function paymentCurrency(
     address _beneficiary
   ) external view returns(address);
@@ -86,6 +94,8 @@ interface ISubscriber {
     bytes memory _data
   ) external;
 
+  /// @notice unsubscribes from given beneficiary
+  /// @param _beneficiary Beneficiary's addreess
   function unsubscribe(
     address _beneficiary
   ) external;

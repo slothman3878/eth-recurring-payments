@@ -27,7 +27,7 @@ contract SubBeneficiary is ISubBeneficiary {
 
   // for safety
   receive() external payable {}
-  
+
   function onSubscription(
     address _operator,
     address _subscriber,
@@ -54,6 +54,7 @@ contract SubBeneficiary is ISubBeneficiary {
   }
 
   /// @notice collect payment from subscriber
+  /// @dev should call the collect function on given subscriber
   function collectFrom(
     address _subscriber,
     uint256 _amount,

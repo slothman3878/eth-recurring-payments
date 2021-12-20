@@ -138,6 +138,14 @@ contract SubscriberBasic is Ownable, ERC165, ISubscriber {
       "Subscriber: collection attempted by non-SubBeneficiary implementer");
   }
 
+  /// @dev should be called at the very end of the subscribe function
+  ///      should check if given beneficiary is either and EOA or a valid contract
+  /// @param _subscriber  as given in the subscribe function
+  /// @param _beneficiary as given in the subscribe function
+  /// @param _token   as given in the subscribe function
+  /// @param _amount  as given in the subscribe function
+  /// @param _period  as given in the subscribe function
+  /// @param _next_payment as given in the subscribe function
   function _checkOnSubscription(
     address _subscriber,
     address _beneficiary,
@@ -165,6 +173,13 @@ contract SubscriberBasic is Ownable, ERC165, ISubscriber {
     }
   }
 
+  /// @dev should be called at the very end of the collect function
+  ///      should check if given beneficiary is either and EOA or a valid contract
+  /// @param _subscriber  as given in the collect function
+  /// @param _beneficiary as given in the collect function
+  /// @param _token   as given in the collect function
+  /// @param _amount  as given in the collect function
+  /// @param _timestamp as given in the collect function
   function _checkOnCollection(
     address _subscriber,
     address _beneficiary,
