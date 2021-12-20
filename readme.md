@@ -43,7 +43,7 @@ An implementattion of `ISubscriber` that uses Chainlink's keeper protocol. To be
 Simple implementation of the `ISubBeneficiary` to demonstrate smart contract subscription beneficiary.
 
 ## Hardhat Tests
-(needs improvement!!!)
+(needs improvement!!! use randomly generated wallets instead of the given signers)
 
 ### Contract Sizes
 ```
