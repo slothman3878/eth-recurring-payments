@@ -9,6 +9,7 @@ const bigNum2Int=(bn)=>{
   return parseInt(bn.toString())
 }
 
+/// should just generate a random wallet then transfer funds to this wallet instead of using one of the waffle signers
 describe("Subscription", async () => {
   var clock;
 
@@ -112,7 +113,7 @@ describe("Subscription", async () => {
       simp_address
     )).wait();
 
-    /// collect after 20 seconds
+    /// collect after 15 seconds
     await new Promise((resolve)=>{setTimeout(resolve, 15000);});
 
     receipt = await (await SubscriberBasic.collect(
