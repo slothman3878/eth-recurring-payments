@@ -39,7 +39,6 @@ contract SubscriberBasic is Ownable, ERC165, ISubscriber {
     address _beneficiary
   ) public view override returns(uint256) {
     require(_is_subscribed[_beneficiary], "Subscriber: not subscribed to beneficiary");
-
     return _subscriptions[_beneficiary].next_payment;
   }
 
@@ -74,18 +73,19 @@ contract SubscriberBasic is Ownable, ERC165, ISubscriber {
     address _token,
     bytes memory
   ) public onlyOwner override virtual {
-    uint256 next_payment = _next_payment;
-    if (block.timestamp > _next_payment) {
-      next_payment = block.timestamp;
+    require(!_is_subscribed[_beneficiary], "Subscriber: Already subscribed to specified beneficiary");
+    uint256 current_timestamp = block.timestamp;
+    if (current_timestamp > _next_payment) {
+      _next_payment = current_timestamp;
     }
     _subscriptions[_beneficiary] = Sub({
       token: _token,
       fee: _amount,
       period: _period,
-      next_payment: next_payment
+      next_payment: _next_payment
     });
     _is_subscribed[_beneficiary] = true;
-    emit Subscription(_beneficiary, _token, _amount, _period, next_payment);
+    emit Subscription(_beneficiary, _token, _amount, _period, _next_payment);
     require(_checkOnSubscription(
       address(this), _beneficiary, _token, _amount,_period,_next_payment), 
       "Subscriber: Attempted Subscription to non-SubBeneficiary implementer");
@@ -95,6 +95,7 @@ contract SubscriberBasic is Ownable, ERC165, ISubscriber {
     address _beneficiary
   ) public onlyOwner override virtual {
     _is_subscribed[_beneficiary] = false;
+    delete _subscriptions[_beneficiary];
   }
 
   function collect(
@@ -105,9 +106,9 @@ contract SubscriberBasic is Ownable, ERC165, ISubscriber {
     require(msg.sender==_beneficiary, "Subscriber: Collection not by Beneficiary");
     require(_is_subscribed[_beneficiary], "Subscriber: Not subscribed to beneficiary");
     require(_amount==_subscriptions[_beneficiary].fee, "Subscriber: Attempted Collection is not the agreed fee");
+    require(_token == _subscriptions[_beneficiary].token, "Subscriber: Specified token is not the one defined during subscription");
     require(block.timestamp >= _subscriptions[_beneficiary].next_payment, "Subscriber: Attempted collection earlier than scheduled");
 
-    //uint256 last_payment = _subscriptions[_beneficiary].next_payment;
     _subscriptions[_beneficiary].next_payment = block.timestamp + _subscriptions[_beneficiary].period;
     
     if(_token == address(0)) {

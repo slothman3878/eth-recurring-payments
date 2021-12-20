@@ -1,13 +1,19 @@
+import 'dotenv/config';
 import {CronJob} from "cron";
 import {providers, utils} from "ethers";
 
 const rpcEndPoint = "http://127.0.0.1:8545/";
+const private_key: String = process.env.TEST_PRIVATE_KEY ?? "";
 
-const job = new CronJob('*/30 * * * * *', () => {
+const test = async ()=>{
+  var conditions = true;
+  while(conditions) {
 
+  }
+}
+
+const job = new CronJob('* * * * * *', () => {
   console.log('Called Every 30 Seconds');
-
-  /// calls on collect function and will check the relevant events
 }, null, true, '');
 
 job.start();

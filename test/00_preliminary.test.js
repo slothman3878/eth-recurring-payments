@@ -2,7 +2,7 @@ const chai = require('chai');
 const { expect } = require('chai');
 const { waffle } = require('hardhat');
 
-describe("preliminary", async () => {
+describe("Preliminary", async () => {
   let deployer, subscriber;
 
   let simp_address;

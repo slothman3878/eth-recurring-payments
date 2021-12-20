@@ -1,12 +1,3 @@
-const openAddress = async (path) => {
-  try { 
-    return require(path).address;
-  } catch {
-    console.log('hello');
-    return "";
-  }
-}
-
 task("fund-simp", "Gives 10k Simp Tokens to Account")
   .addOptionalParam("simpaddress", "The address of simple token contract",
     //require("../deployments/localhost/SimpleToken.json").address)

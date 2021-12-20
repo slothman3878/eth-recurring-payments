@@ -11,6 +11,7 @@ require('dotenv').config();
 require('./tasks/accounts');
 require('./tasks/fund-eth');
 require('./tasks/fund-simp');
+require('./tasks/subscribe');
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -60,5 +61,8 @@ module.exports = {
     currency: 'USD',
     gasPrice: 30,
     coinmarketcap: process.env.COINMARKETCAP_API_KEY
+  },
+  mocha: {
+    timeout: 100000
   }
 };

@@ -33,3 +33,6 @@ The aim is to maximize interoperability.
 
 ### Demo Beneficiary
 A simple node application that triggers the `collect` function on a subscriber contract on regular intervals.
+
+### TODO
+- [] timed chai tests using `setTimeout`
