@@ -45,6 +45,10 @@ Simple implementation of the `ISubBeneficiary` to demonstrate smart contract sub
 ## Hardhat Tests
 (needs improvement!!! use randomly generated wallets instead of the given signers)
 
+Right now, running tests is a bit tricky. Requires a hardhat localhost network running, as well as funding the `SimpleToken` (used to test wallet token compatability) for the signers and ether for the contracts.
+
+Tests take just over a minute to run as well. The node runtime can be duped into thinking time has passed, but unsure if the hardhat test network can also be duped as well.
+
 ### Contract Sizes
 ```
   ·-------------------|-------------·
