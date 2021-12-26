@@ -102,5 +102,4 @@ Tests take just over a minute to run as well. The node runtime can be duped into
 ```
 
 ### Demo Beneficiary
-Collection automation script written in node.js.
-To be implemented.
+Simple `Hapi` backend script demonstrating beneficiary-side automation. Mostly for "philosophical" purposes. Strictly speaking, this isn't a "trustless" implementation of automated recurring payments.

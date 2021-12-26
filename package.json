@@ -4,6 +4,7 @@
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
     "@types/cron": "^1.7.3",
+    "@types/hapi__hapi": "^20.0.10",
     "@types/node-cron": "^3.0.0",
     "chai": "^4.3.4",
     "ethereum-waffle": "^3.4.0",
@@ -19,6 +20,7 @@
   },
   "dependencies": {
     "@chainlink/contracts": "^0.3.0",
+    "@hapi/hapi": "^20.2.1",
     "@openzeppelin/contracts": "^4.4.0",
     "cron": "^1.8.2",
     "dotenv": "^10.0.0",
@@ -26,8 +28,8 @@
   },
   "scripts": {
     "watch": "yarn tsc -w",
-    "dev": "nodemon dist",
+    "dev": "nodemon dist/src",
     "build": "yarn tsc",
-    "start": "node dist"
+    "start": "node dist/src"
   }
 }
