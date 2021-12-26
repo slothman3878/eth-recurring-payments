@@ -18,8 +18,8 @@ To overcome this limitation, the obvious answer seems to be using **Smart Contra
 Here we introduce a simple interface for smart contract that allows **subscription** and **collection** of fees.
 
 ### Limitations of this solution
-1. The biggest limitation is obviously lack of compatibility with EOAs. While payment beneficiary's can be EOAs, subscriber's **MUST** be smart contracts.
-2. No clear asnswer to **Automation**.
+1. The biggest limitation is obviously lack of compatibility with EOAs. While payment beneficiaries can be EOAs, subscribers **MUST** be smart contracts.
+2. No clear answer to **Automation**.
    Arguably, its reasonable to assume that a subscription based payment system should be automated. Automation can be implemented either by an off-chain bot that trigggers the `collect` function, or using a decentralized transaction scheduling application like **Aion** or **Chainlink Keepers**. Both cases are dependent on systems outside of the subscriber-beneficiary relationship.
 
 ## Specification
