@@ -186,4 +186,4 @@ Should try using randomly generated wallets/signers instead of those given by th
 ```
 
 ### Demo Beneficiary
-Simple `Hapi` backend script demonstrating beneficiary-side automation. Mostly for "philosophical" purposes. Strictly speaking, this isn't a "trustless" implementation of automated recurring payments. Complementary react client can be found [here](https://github.com/slothmanxyz/eth-recurring-payments-demo).
+Simple `Hapi` backend script demonstrating beneficiary-side automation. Complementary react client can be found [here](https://github.com/slothmanxyz/eth-recurring-payments-demo).
