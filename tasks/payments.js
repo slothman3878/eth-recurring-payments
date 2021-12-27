@@ -7,22 +7,20 @@ task('payments', 'Returns event-logs for payment events')
       }
     })("../deployments/localhost/SubBeneficiary.json"))
   .setAction(async(args) => {
-    /*filter = {
-      address: tokenAddress,
-      topics: [
-        id("Payment(address,address,uint256,uint256,uint256)"),
-        hexZeroPad(args.beneficiary, 32)
-      ]
-    };*/
     console.log("----------------------------------------------------");
     console.log("Make sure the localhost network is running, and your wallet is connected to a network rpc. Otherwise, the transferred ETH won't be visible.")
     console.log("Make sure you've added `--network localhost` at the end of this command");
     console.log("----------------------------------------------------");
     SubscriberFactory = await ethers.getContractFactory('SubscriberBasic');
-    contract = await SubscriberFactory.attach(args.subscriber);
-    console.log(
-      contract.filters.Payment(args.beneficiary)
-    );
+    let provider = waffle.provider;
+    let abi = ["event Payment(address indexed beneficiary,address token,uint256 fee,uint256 indexed timestamp,uint256 indexed next_payment)"];
+    let iface = new ethers.utils.Interface(abi);
+    var filter = {
+      address: args.subscriber,
+    };
+    var logs = await provider.getLogs(filter);
+    let events = logs.map((log)=>iface.parseLog(log));
+    console.log(events);
     console.log("----------------------------------------------------");
   });
 
