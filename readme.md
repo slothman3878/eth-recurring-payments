@@ -6,11 +6,11 @@
 2. Trustless indefinite Recurring Payments.
 3. A beneficiary's ability to check upcoming and completed payments.
 
-Simply put, we want a system where a **User** is able to do periodic payments without needing to confirm every transaction manually.
-
 ## Intro
 ### Motivation
 Modern platforms often provide services through "subscriptions": automated, recurring payments from a **Subscriber** to a **Beneficiary**. In a traditional "centralized" banking system, since every account and transaction is maintained by a centralized bank, it is fairly easy to implement such a system. On the other hand, crypto has a lot less flexibility when it comes to transactions. In Ethereum, each individual transaction must be signed by a private key &ndash; a necessary feature, but limiting when it comes to implementing payment streams.
+
+Simply put, we want a system where a **User** is able to do periodic payments without needing to confirm every transaction manually.
 
 ### Solution
 The obvious answer seems to be using **Smart Contract Wallets** with subscription functionalities. It's worth thinking in terms of **collections** rather than **payments**. By using smart contract wallets, we can allow beneficiaries to "collect" ether or wallet tokens given time constraints. Such time constraints can be implemented comparing a promised timestamp for collection and `block.timestamp`.
