@@ -13,11 +13,13 @@ Modern platforms often provide services through "subscriptions": automated, recu
 ### Solution
 The obvious answer seems to be using **Smart Contract Wallets** with subscription functionalities. It's worth thinking in terms of **collections** rather than **payments**. By using smart contract wallets, we can allow beneficiaries to "collect" ether or wallet tokens given time constraints. Such time constraints can be implemented comparing a promised timestamp for collection and `block.timestamp`.
 
+For beneficiaries, scheduled payments can be checked by querying the subscriber contract directly, and completed payments can be queried using event logs.
+
 Here we introduce a simple interface for smart contract that allows **subscription** and **collection** of fees.
 
 ### Limitations
-1. Lack of compatibility with EOAs. While payment beneficiaries can be EOAs, subscribers **MUST** be smart contracts.
-2. No clear answer to **Automation**.
+1. Limited compatibility with EOAs. While payment beneficiaries can be EOAs, subscribers **MUST** be smart contracts.
+2. No clear **Trustless** solution to **Automation**.
    Arguably, a subscription based payment system should be automated. Automation can be implemented either by an off-chain bot that trigggers the `collect` function, or using a decentralized transaction scheduling application like **Aion** or **Chainlink Keepers**. Both cases are dependent on systems outside of the subscriber-beneficiary relationship.
 
 ## Specification
