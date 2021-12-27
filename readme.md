@@ -16,7 +16,7 @@ The obvious answer seems to be using **Smart Contract Wallets** with subscriptio
 For beneficiaries, scheduled payments can be checked by querying the subscriber contract directly, and completed payments can be queried using event logs.
 
 <!--rework this part...-->
-Note that we aren't actually triggering an automated payment stream. Rather, we are setting up a contract which promises periodic collections. Collection transactions must be signed by the beneficiaries.
+Note that we aren't actually triggering an automated payment stream. Rather, we are setting up a contractthat can promise periodic collections. Each collection transaction have to be signed individually, just not by the subscriber.
 
 Here we introduce a simple interface for smart contract that allows **subscription** and **collection** of fees.
 
@@ -189,3 +189,7 @@ Should try using randomly generated wallets/signers instead of those given by th
 
 ### Demo Beneficiary
 Simple `Hapi` backend script demonstrating beneficiary-side automation. Complementary react client can be found [here](https://github.com/slothmanxyz/eth-recurring-payments-demo).
+
+## Final Thoughts
+- `safeSubscribe` vs `subscribe`. `ISubBeneficiary` strict for `safeSubscribe`; not for `subscribe`.
+- `period` field in `Subscription` event. Redundant, as long as the beneficiary can be informed of `next_payment`.
