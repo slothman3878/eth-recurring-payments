@@ -12,6 +12,7 @@ require('./tasks/accounts');
 require('./tasks/fund-eth');
 require('./tasks/fund-simp');
 require('./tasks/subscribe');
+require('./tasks/payments');
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
