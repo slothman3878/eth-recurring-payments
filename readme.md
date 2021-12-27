@@ -39,6 +39,7 @@ An interface for a smart contract wallet that supports scheduled collections. Su
     uint256 period,
     uint256 indexed next_payment
   )
+
   /// on Payment or Collection
   event Payment(
     address indexed beneficiary,
@@ -51,6 +52,7 @@ An interface for a smart contract wallet that supports scheduled collections. Su
 
 ##### Methods
 The view functions should disclose subscription related information such as fees, currency, and date of next scheduled payment.
+
 ```solidity
   /// view functions
   function nextPayment(address _beneficiary) external view returns(uint256)
@@ -80,15 +82,41 @@ The view functions should disclose subscription related information such as fees
 
   /// @notice subscription fee collection
   /// @dev    must be called by beneficiary
-  function collect(
-    address _beneficiary,
-    uint256 _amount,
-    address _token
-  ) external
+  function collect(address _beneficiary, uint256 _amount, address _token) external
 ```
 
 #### `ISubBeneficiary` interface
-Smart contract beneficiary accounts must implement this interface. Functionally similar to the `IERC721Receivable` interface for the `IERC721` standard.
+For safety, smart contract beneficiary accounts must implement this interface. Functionally similar to the `IERC721Receivable` interface complementing the `IERC721` standard.
+
+```solidity
+  /// @notice called on subscritpion
+  /// @return bytes4(keccak256("onSubscription(address,address,address,uint256,uint256,uint256)"))
+  function onSubscription(
+    address _operator,
+    address _subscriber,
+    address _token,
+    uint256 _amount,
+    uint256 _period,
+    uint256 _next_payment
+  ) external returns(bytes4)
+
+  /// @notice called on payment collection
+  /// @return bytes4(keccak256("onCollection(address,address,address,uint256,uint256"))
+  function onCollection(
+    address _operator,
+    address _subscriber,
+    address _token,
+    uint256 _amount,
+    uint256 _timestamp
+  ) external returns(bytes4);
+
+  /// @notice collect payment in Ether from subscriber
+  function collectFrom(
+    address _subscriber,
+    uint256 _amount,
+    address _token
+  ) external payable;
+```
 
 ### Example Implementations
 Example implementations are provided in the `contracts` folder.
@@ -106,11 +134,9 @@ An implementattion of `ISubscriber` that uses Chainlink's keeper protocol. To be
 Simple implementation of the `ISubBeneficiary` to demonstrate smart contract subscription beneficiary. Uses a simple credit system as proof of subscription; i.e. whenever a subscriber completes of payment, or whenever the beneficiary completes a collection, the subscriber is given a "token" as proof of completed transaction.
 
 ## Hardhat Tests
-(needs improvement!!! use randomly generated wallets instead of the given signers)
+Requires a hardhat localhost network running.
 
-Right now, running tests is a bit tricky. Requires a hardhat localhost network running, as well as funding the `SimpleToken` (used to test wallet token compatability) for the signers and ether for the contracts.
-
-Tests take just over a minute to run as well. The node runtime can be duped into thinking time has passed, but unsure if the hardhat test network can also be duped as well.
+Should try using randomly generated wallets/signers instead of those given by the hardhat environment.
 
 ### Contract Sizes
 ```
@@ -160,4 +186,4 @@ Tests take just over a minute to run as well. The node runtime can be duped into
 ```
 
 ### Demo Beneficiary
-Simple `Hapi` backend script demonstrating beneficiary-side automation. Mostly for "philosophical" purposes. Strictly speaking, this isn't a "trustless" implementation of automated recurring payments. Complementary react client can be found here.
+Simple `Hapi` backend script demonstrating beneficiary-side automation. Mostly for "philosophical" purposes. Strictly speaking, this isn't a "trustless" implementation of automated recurring payments. Complementary react client can be found [here](https://github.com/slothmanxyz/eth-recurring-payments-demo).
