@@ -15,7 +15,8 @@ The obvious answer seems to be using **Smart Contract Wallets** with subscriptio
 
 For beneficiaries, scheduled payments can be checked by querying the subscriber contract directly, and completed payments can be queried using event logs.
 
-Note that we aren't actually triggering an automated payment stream. Rather, we are setting up a contract which ensures certain actions can periodically happen.
+<!--rework this part...-->
+Note that we aren't actually triggering an automated payment stream. Rather, we are setting up a contract which promises periodic collections. Collection transactions must be signed by the beneficiaries.
 
 Here we introduce a simple interface for smart contract that allows **subscription** and **collection** of fees.
 
