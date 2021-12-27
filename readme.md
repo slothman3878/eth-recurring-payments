@@ -195,3 +195,4 @@ Simple `Hapi` backend script demonstrating beneficiary-side automation. Compleme
 ## Final Thoughts
 - `safeSubscribe` vs `subscribe`. `ISubBeneficiary` strict for `safeSubscribe`; not for `subscribe`.
 - `period` field in `Subscription` event. Redundant, as long as the beneficiary can be informed of `next_payment`.
+- Support for non-fungible tokens.
