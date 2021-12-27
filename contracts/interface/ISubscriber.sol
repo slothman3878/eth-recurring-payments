@@ -77,7 +77,7 @@ interface ISubscriber {
     address _token
   ) external;
 
-  /// @notice 
+  /// @notice Subscribes to given beneficiary account
   /// @param _beneficiary   Subscribee contract address
   /// @param _amount        Subscription Fee
   /// @param _period        Payment Schedule in seconds
@@ -100,7 +100,7 @@ interface ISubscriber {
     address _beneficiary
   ) external;
 
-  /// @notice subscription fee collection (in ERC20 tokens)
+  /// @notice subscription fee collection
   /// @param _beneficiary beneficiary address
   /// @param _amount      amount of ETH
   /// @param _token       ERC20 token address. Should == 0x0 in case of Ether collection

@@ -13,21 +13,79 @@ All three implementations must be **Trustless**.
 Modern platforms often provide services through "subscriptions": automated, recurring payments from a **Subscriber** to a **Beneficiary**. In a traditional "centralized" banking system, since every account and transaction is maintained by a centralized bank, it is fairly easy to implement such a system. On the other hand, crypto has a lot less flexibility when it comes to transactions. In Ethereum, each individual transaction must be signed by a private key &ndash; a necessary feature, but limiting when it comes to implementing payment streams.
 
 ### Solution
-To overcome this limitation, the obvious answer seems to be using **Smart Contract Wallets** instead of **EOA** (externally owned accounts). It's worth thinking in terms of **collections** rather than **payments**. By using smart contract wallets, we can allow beneficiaries to "collect" ether or wallet tokens given conditions &ndash; e.g. timestamp conditions.
+To overcome this limitation, the obvious answer seems to be using **Smart Contract Wallets** instead of **EOA** (externally owned accounts). It's worth thinking in terms of **collections** rather than **payments**. By using smart contract wallets, we can allow beneficiaries to "collect" ether or wallet tokens given time constraints.
 
 Here we introduce a simple interface for smart contract that allows **subscription** and **collection** of fees.
 
 ### Limitations of this solution
 1. The biggest limitation is obviously lack of compatibility with EOAs. While payment beneficiaries can be EOAs, subscribers **MUST** be smart contracts.
 2. No clear answer to **Automation**.
-   Arguably, its reasonable to assume that a subscription based payment system should be automated. Automation can be implemented either by an off-chain bot that trigggers the `collect` function, or using a decentralized transaction scheduling application like **Aion** or **Chainlink Keepers**. Both cases are dependent on systems outside of the subscriber-beneficiary relationship.
+   Arguably, a subscription based payment system should be automated. Automation can be implemented either by an off-chain bot that trigggers the `collect` function, or using a decentralized transaction scheduling application like **Aion** or **Chainlink Keepers**. Both cases are dependent on systems outside of the subscriber-beneficiary relationship.
 
 ## Specification
 ### Contracts
 The aim is to maximize interoperability.
 
 #### `ISubscriber` interface
+An interface for a smart contract wallet that supports scheduled collections. Such a contract must have the basic functionalities of a wallet (transfer of ether and wallet tokens) and methods for subscriptiona and collection.
 
+##### Events
+```solidity
+  /// on subscription
+  event Subscription(
+    address indexed beneficiary,
+    address token,
+    uint256 fee,
+    uint256 period,
+    uint256 indexed next_payment
+  )
+  /// on Payment or Collection
+  event Payment(
+    address indexed beneficiary,
+    address token,
+    uint256 fee,
+    uint256 indexed timestamp,
+    uint256 indexed next_payment
+  )
+```
+
+##### Methods
+The view functions should disclose subscription related information such as fees, currency, and date of next scheduled payment.
+```solidity
+  /// view functions
+  function nextPayment(address _beneficiary) external view returns(uint256)
+
+  function fee(address _beneficiary) external view returns(uint256)
+
+  function paymentCurrency(address _beneficiary) external view returns(address)
+
+  /// wallet functionality
+  function transfer(uint256 _amount, address _to) external
+  function transfer(uint256 _amount, address _to, address _token) external
+
+  /// subscription functionality
+  /// @notice Subscribes to given beneficiary account
+  /// @dev    Contract beneficiaries must implement the ISubBeneficiary interface
+  function subscribe(
+    address _beneficiary,
+    uint256 _amount,
+    uint256 _period,
+    uint256 _next_payment,
+    address _token,
+    bytes memory _data
+  ) external
+
+  /// @notice unsubscribes from given beneficiary
+  function unsubscribe(address _beneficiary) external
+
+  /// @notice subscription fee collection
+  /// @dev    must be called by beneficiary
+  function collect(
+    address _beneficiary,
+    uint256 _amount,
+    address _token
+  ) external
+```
 
 #### `ISubBeneficiary` interface
 Smart contract beneficiary accounts must implement this interface. Functionally similar to the `IERC721Receivable` interface for the `IERC721` standard.
