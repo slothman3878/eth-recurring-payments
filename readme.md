@@ -6,6 +6,8 @@
 2. Trustless indefinite Recurring Payments.
 3. A beneficiary's ability to check upcoming and completed payments.
 
+Simply put, we want a system where a **User** is able to do periodic payments without needing to confirm every transaction manually.
+
 ## Intro
 ### Motivation
 Modern platforms often provide services through "subscriptions": automated, recurring payments from a **Subscriber** to a **Beneficiary**. In a traditional "centralized" banking system, since every account and transaction is maintained by a centralized bank, it is fairly easy to implement such a system. On the other hand, crypto has a lot less flexibility when it comes to transactions. In Ethereum, each individual transaction must be signed by a private key &ndash; a necessary feature, but limiting when it comes to implementing payment streams.
@@ -130,10 +132,10 @@ Basic implementation of the `ISubscriber` interface. Uses a mapping from an `add
 An implementation of `ISubscriber` that uses the Aion protocol &ndash; a poorly maintained alternative to the old ethereum alarm clock protocol
 
 #### `SubscriberLink` is `ISubscriber`
-An implementattion of `ISubscriber` that uses Chainlink's keeper protocol. To be implemented...
+An implementattion of `ISubscriber` that uses Chainlink's keeper protocol. *To be implemented...*
 
 #### `SubBeneficiary` is `ISubBeneficiary`
-Simple implementation of the `ISubBeneficiary` to demonstrate smart contract subscription beneficiary. Uses a simple credit system as proof of subscription; i.e. whenever a subscriber completes of payment, or whenever the beneficiary completes a collection, the subscriber is given a "token" as proof of completed transaction.
+Simple implementation of the `ISubBeneficiary`. Implements a simple credit system as proof of subscription; whenever a subscriber completes of payment &ndash; i.e. the beneficiary completes a collection &ndash; the subscriber is given a "token" as proof of completed transaction.
 
 ## Hardhat Tests
 Requires a hardhat localhost network running.

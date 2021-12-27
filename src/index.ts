@@ -54,6 +54,7 @@ const init = async () => {
     }
   });
 
+  /// 404
   server.route({
     method: '*',
     path: '/{any*}',
@@ -71,6 +72,7 @@ const init = async () => {
     }
   });
 
+  /// simpletoken contract address and abi
   server.route({
     method: 'GET',
     path: '/simp',
@@ -79,6 +81,7 @@ const init = async () => {
     }
   })
 
+  /// subbeneficiary contract address and abi
   server.route({
     method: 'GET',
     path: '/beneficiary',
@@ -87,6 +90,7 @@ const init = async () => {
     }
   })
 
+  /// subscriber abi
   server.route({
     method: 'GET',
     path: '/subscriber',
@@ -95,6 +99,7 @@ const init = async () => {
     }
   })
 
+  /// subscription info
   server.route({
     method: ['PUT', 'POST'],
     path: '/subscribe',
@@ -109,6 +114,7 @@ const init = async () => {
     }
   })
 
+  /// ether drop
   server.route({
     method: ['PUT', 'POST'],
     path: '/faucet/eth',
@@ -142,7 +148,7 @@ const test = async (subscribers: string[])=>{
   var conditions = true;
   while(conditions) {
     /// for convenience, this part runs every second
-    await new Promise((resolve)=>{setTimeout(resolve, 1000);});
+    await new Promise((resolve)=>{setTimeout(resolve, 5000);});
     /// maybe copy subscribers list, and then run a queue
     /// console.log(Date.now());
     /// loop through all subscribers
@@ -152,23 +158,24 @@ const test = async (subscribers: string[])=>{
         Subscriber = new Contract(subscriber, SubscriberBasicABI.abi, external_beneficiary);
         if(await Subscriber.isSubscribedTo(SubBeneficiary.address)) {
           let fee = await Subscriber.fee(SubBeneficiary.address);
-          console.log(fee);
+          //console.log(fee);
           let currency = await Subscriber.paymentCurrency(SubBeneficiary.address);
-          console.log(currency);
+          //console.log(currency);
           let next_payment = await Subscriber.nextPayment(SubBeneficiary.address);
-          console.log(next_payment);
-          if(next_payment.toNumber()*1000 < Date.now()) {
-            console.log(next_payment.toNumber()*1000 + ' ' + Date.now());
+          //console.log(next_payment);
+          // if(next_payment.toNumber()*1000 < Date.now()) {
+            /// console.log(next_payment.toNumber()*1000 + ' ' + Date.now());
             /// collect
             await SubBeneficiary.collectFrom(
               subscriber,
               fee,
               currency
             );
-          }
+            console.log(`successful collection from ${subscriber}`);
+          // }
         }
       } catch(err) {
-        console.log(err.message);
+        // console.log(err.message);
       }
     })
   }
