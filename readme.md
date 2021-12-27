@@ -20,12 +20,11 @@ Here we introduce a simple interface for smart contract that allows **subscripti
 ### Limitations
 1. Limited compatibility with EOAs. While payment beneficiaries can be EOAs, subscribers **MUST** be smart contracts.
 2. No clear **Trustless** solution to **Automation**.
-   Arguably, a subscription based payment system should be automated. Automation can be implemented either by an off-chain bot that trigggers the `collect` function, or using a decentralized transaction scheduling application like **Aion** or **Chainlink Keepers**. Both cases are dependent on systems outside of the subscriber-beneficiary relationship.
+  - Potential Solutions to Automation:
+    Automation can be implemented either by an off-chain bot that trigggers the `collect` function, or using a decentralized transaction scheduling application like **Aion** or **Chainlink Keepers**.
 
 ## Specification
 ### Contracts
-The aim is to maximize interoperability.
-
 #### `ISubscriber` interface
 An interface for a smart contract wallet that supports scheduled collections. Such a contract must have the basic functionalities of a wallet (transfer of ether and wallet tokens) and methods for subscriptiona and collection.
 
