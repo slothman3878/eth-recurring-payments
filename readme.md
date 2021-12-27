@@ -20,8 +20,8 @@ Here we introduce a simple interface for smart contract that allows **subscripti
 ### Limitations
 1. Limited compatibility with EOAs. While payment beneficiaries can be EOAs, subscribers **MUST** be smart contracts.
 2. No clear **Trustless** solution to **Automation**.
-  - Potential Solutions to Automation:
-    Automation can be implemented either by an off-chain bot that trigggers the `collect` function, or using a decentralized transaction scheduling application like **Aion** or **Chainlink Keepers**.
+     - Potential Solutions to Automation:
+        Automation can be implemented either by an off-chain bot that trigggers the `collect` function, or using a decentralized transaction scheduling application like **Aion** or **Chainlink Keepers**.
 
 ## Specification
 ### Contracts
