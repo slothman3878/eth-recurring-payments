@@ -24,8 +24,8 @@ task("fund-simp", "Gives 10k Simp Tokens to Account")
     console.log("----------------------------------------------------");
     console.log("Transferring " + amount + " Simple Tokens to "+ args.account +" ...")
     simp = await Simp.attach(args.simpaddress);
-    await simp.mint(ethers.BigNumber.from(amount));
-    await simp.transfer(args.account, amount);
+    await simp.mint(args.account, ethers.BigNumber.from(amount));
+    /// await simp.transfer(args.account, amount);
     console.log("Transfer Complete!")
     console.log(args.account+" has "+(await simp.balanceOf(args.account)).toString()+" SIMP")
     console.log("----------------------------------------------------");

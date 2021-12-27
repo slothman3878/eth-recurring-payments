@@ -75,4 +75,11 @@ contract SubBeneficiary is ISubBeneficiary {
       _token
     );
   }
+
+  function credit(
+    address _subscriber
+  ) public view returns(uint256) {
+    if(_sub_tokens[_subscriber] > 0){ return _sub_tokens[_subscriber] - 1; }
+    else{ return 0; }
+  }
 }

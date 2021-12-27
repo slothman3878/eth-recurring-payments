@@ -9,8 +9,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract SimpleToken is ERC20('SimpleToken', 'SIMP') {
 
   /// @notice mints given amount of tokens for msg.sender
-  function mint(uint256 amount) public {
-    _mint(msg.sender, amount);
+  function mint(address account, uint256 amount) public {
+    _mint(account, amount);
   }
 
   function decimals() public pure override returns (uint8) {

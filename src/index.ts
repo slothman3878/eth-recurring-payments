@@ -1,6 +1,6 @@
 import 'dotenv/config';
 //import {CronJob} from "cron";
-import {providers, utils, Contract, Signer} from "ethers";
+import {providers, utils, constants, Contract, Signer} from "ethers";
 import Hapi from "@hapi/hapi";
 
 /// json
@@ -8,11 +8,21 @@ import * as SimpleTokenJson from "../deployments/localhost/SimpleToken.json";
 import * as SubBeneficiaryJson from "../deployments/localhost/SubBeneficiary.json";
 import * as SubscriberBasicABI from "../artifacts/contracts/SubscriberBasic.sol/SubscriberBasic.json";
 
+interface AccountPayload {
+  account: string;
+}
+
+interface SubscribePayload {
+  account: string;
+  amount: number;
+}
+
 const RPC_ENDPOINT = "http://127.0.0.1:8545/";
 
 const PAYMENT_CYCLE = 1; // in seconds
 
 let SimpleToken: Contract;
+let SubBeneficiary: Contract;
 
 let external_beneficiary: Signer;
 let contract_beneficiary: Signer;
@@ -24,9 +34,9 @@ const setup = async () => {
   external_beneficiary = await provider.getSigner(2);
   contract_beneficiary = await provider.getSigner(3);
   bank = await provider.getSigner(9);
-  /// console.log(await provider.listAccounts());
 
   SimpleToken = new Contract(SimpleTokenJson.address, SimpleTokenJson.abi, bank);
+  SubBeneficiary = new Contract(SubBeneficiaryJson.address, SubBeneficiaryJson.abi, contract_beneficiary);
 }
 
 const init = async () => {
@@ -35,16 +45,12 @@ const init = async () => {
   await setup();
 
   const server = Hapi.server({
-    port: 3000,
-    host: 'localhost'
-  });
-
-  server.route({
-    method: 'GET',
-    path: '/',
-    handler: (request, h) => {
-      subscribers.push('hello');
-      return 'Hello World!';
+    port: 5000,
+    host: 'localhost',
+    routes: {
+      cors: {
+        origin: ['*'],
+      }
     }
   });
 
@@ -53,6 +59,15 @@ const init = async () => {
     path: '/{any*}',
     handler: function (request, h) {
       return '404 Error! Page Not Found!';
+    }
+  });
+
+  server.route({
+    method: 'GET',
+    path: '/',
+    handler: (request, h) => {
+      subscribers.push('hello');
+      return 'Hello World!';
     }
   });
 
@@ -73,48 +88,40 @@ const init = async () => {
   })
 
   server.route({
-    method: ['PUT', 'POST'],
+    method: 'GET',
     path: '/subscriber',
     handler: (request, h) => {
-      const payload = request.payload;
-      /// payload contains subscriber address
-      /// how do I trigger the automation tho?
-      /// push into a list of subscribers?
-      /// what then?
-      /// need to trigger transactions at the correct time
-      /// what about multiple transactions?
-      /// whenever a user loads a page, their subscriber info should provide contract info
-      subscribers.push(payload.toString());
-      return `Welcome!`;
+      return SubscriberBasicABI;
+    }
+  })
+
+  server.route({
+    method: ['PUT', 'POST'],
+    path: '/subscribe',
+    handler: (request, h) => {
+      const payload = request.payload as AccountPayload; //SubscribePayload
+      subscribers.push(payload.account);
+      console.log(payload.account);
+      return {
+        desc: 'ether subscription',
+        amount: constants.WeiPerEther.div(10)
+      };
     }
   })
 
   server.route({
     method: ['PUT', 'POST'],
     path: '/faucet/eth',
-    handler: (request, h) => {
-      const payload = request.payload;
-      console.log(payload);
-      /// payload can be a simple string. In that case, just send the account as a string
+    handler: async (request, h) => {
+      const account = (request.payload as AccountPayload).account;
+      const tx = await bank.sendTransaction({
+        to: account,
+        value: constants.WeiPerEther.mul(100),
+      });
       return {
         desc: 'ether transfer',
-        amount: 100,
-        recipient: payload
-      };
-    }
-  })
-
-  /// can just call the mint function on simple token client-side
-  server.route({
-    method: ['PUT', 'POST'],
-    path: '/faucet/simp',
-    handler: (request, h) => {
-      const payload = request.payload;
-      /// payload can be a simple string. In that case, just send the account as a string
-      return {
-        desc: 'simp transfer',
-        amount: 100,
-        recipient: payload
+        amount: constants.WeiPerEther.mul(100),
+        recipient: account
       };
     }
   })
@@ -137,29 +144,29 @@ const test = async (subscribers: string[])=>{
     /// for convenience, this part runs every second
     await new Promise((resolve)=>{setTimeout(resolve, 1000);});
     /// maybe copy subscribers list, and then run a queue
-    console.log(Date.now());
+    /// console.log(Date.now());
     /// loop through all subscribers
     subscribers.forEach(async (subscriber: string) => {
       let Subscriber: Contract;
       try { 
         Subscriber = new Contract(subscriber, SubscriberBasicABI.abi, external_beneficiary);
-        if(await Subscriber.isSubscribedTo(external_beneficiary)) {
-          let fee = await Subscriber.fee(external_beneficiary);
-          let currency = await Subscriber.currency(external_beneficiary);
-          let next_payment = await Subscriber.nextPayment(external_beneficiary);
-          if(next_payment*1000 < Date.now()) {
+        if(await Subscriber.isSubscribedTo(SubBeneficiary.address)) {
+          let fee = await Subscriber.fee(SubBeneficiary.address);
+          console.log(fee);
+          let currency = await Subscriber.paymentCurrency(SubBeneficiary.address);
+          console.log(currency);
+          let next_payment = await Subscriber.nextPayment(SubBeneficiary.address);
+          console.log(next_payment);
+          if(next_payment.toNumber()*1000 < Date.now()) {
+            console.log(next_payment.toNumber()*1000 + ' ' + Date.now());
             /// collect
-            await Subscriber.collect(
-              await external_beneficiary.getAddress(),
+            await SubBeneficiary.collectFrom(
+              subscriber,
               fee,
               currency
             );
-            /// something to do on success?
-            /// or perhaps its more "trustless" to check success of payment client-side by querying event logs
-            /// haven't I determined that querying event-logs client-side is either dangerous or ineffecient...?
-            /// just assume that the client is using a public endpoint
           }
-        } /// else if contract_beneficiary
+        }
       } catch(err) {
         console.log(err.message);
       }
@@ -170,13 +177,3 @@ const test = async (subscribers: string[])=>{
 init().then(subscribers=>
   test(subscribers)
 );
-
-/*
-const job = new CronJob('* * * * * *', () => {
-  console.log('Called Every 30 Seconds');
-}, null, true, '');
-
-job.start();
-*/
-
-// test();
