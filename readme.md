@@ -2,23 +2,21 @@
 ## Subscriptions in Ethereum
 
 ### Features to Implement
-1. Payments using Ether and Transferrable Smart Contract Tokens.
-2. Indefinite Recurring Payments.
+1. Trustless timed/scheduled payments using Ether and Transferrable Smart Contract Tokens.
+2. Trustless indefinite Recurring Payments.
 3. A beneficiary's ability to check upcoming and completed payments.
-
-All three implementations must be **Trustless**.
 
 ## Intro
 ### Motivation
 Modern platforms often provide services through "subscriptions": automated, recurring payments from a **Subscriber** to a **Beneficiary**. In a traditional "centralized" banking system, since every account and transaction is maintained by a centralized bank, it is fairly easy to implement such a system. On the other hand, crypto has a lot less flexibility when it comes to transactions. In Ethereum, each individual transaction must be signed by a private key &ndash; a necessary feature, but limiting when it comes to implementing payment streams.
 
 ### Solution
-The obvious answer seems to be using **Smart Contract Wallets** with subscription functionalities. It's worth thinking in terms of **collections** rather than **payments**. By using smart contract wallets, we can allow beneficiaries to "collect" ether or wallet tokens given time constraints.
+The obvious answer seems to be using **Smart Contract Wallets** with subscription functionalities. It's worth thinking in terms of **collections** rather than **payments**. By using smart contract wallets, we can allow beneficiaries to "collect" ether or wallet tokens given time constraints. Such time constraints can be implemented comparing a promised timestamp for collection and `block.timestamp`.
 
 Here we introduce a simple interface for smart contract that allows **subscription** and **collection** of fees.
 
-### Limitations of this solution
-1. The biggest limitation is obviously lack of compatibility with EOAs. While payment beneficiaries can be EOAs, subscribers **MUST** be smart contracts.
+### Limitations
+1. Lack of compatibility with EOAs. While payment beneficiaries can be EOAs, subscribers **MUST** be smart contracts.
 2. No clear answer to **Automation**.
    Arguably, a subscription based payment system should be automated. Automation can be implemented either by an off-chain bot that trigggers the `collect` function, or using a decentralized transaction scheduling application like **Aion** or **Chainlink Keepers**. Both cases are dependent on systems outside of the subscriber-beneficiary relationship.
 
